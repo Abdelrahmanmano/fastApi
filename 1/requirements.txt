@@ -1,0 +1,12 @@
+fastapi
+uvicorn
+pydantic
+typing_extensions
+sqlalchemy
+passlib[bcrypt]
+alembic
+python-jose
+pytest
+pytest-asyncio
+python-multipart
+# openssl rand -hex 32
