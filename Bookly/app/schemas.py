@@ -39,3 +39,32 @@ class UserCreate(BaseModel):
 
     class Config:
         from_attributes = True
+        
+
+class UserGet(BaseModel):
+    id: int
+    username: str
+    email: str
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+        
+class UserUpdate(BaseModel):
+    username: Optional[str] = None
+    email: Optional[EmailStr] = None
+    is_active: Optional[bool] = None
+
+    class Config:
+        from_attributes = True
+        
+class UserLogin(BaseModel):
+    email: EmailStr
+    password: str
+    
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+    
+class TokenData(BaseModel):
+    user_id: Optional[str] = None

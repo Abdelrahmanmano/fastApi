@@ -24,4 +24,4 @@ class User(Base):
     password = Column(String, nullable=False)
     is_active = Column(Boolean, default=True)
     created_at = Column(TIMESTAMP(timezone=True), server_default=text('now()'), nullable=False)
-    # updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
