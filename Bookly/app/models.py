@@ -1,6 +1,7 @@
 from .database import Base
-from sqlalchemy import Column, Integer, String, Boolean, Float, DateTime, func, TIMESTAMP
+from sqlalchemy import Column, ForeignKey, Integer, String, Boolean, Float, DateTime, func, TIMESTAMP
 from sqlalchemy.sql.expression import text
+from sqlalchemy.orm import relationship
 
 
 class Post(Base):
@@ -14,6 +15,9 @@ class Post(Base):
     rating = Column(Float, nullable=True, server_default='0')
     created_at = Column(TIMESTAMP(timezone=True), server_default=text('now()'), nullable=False)
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    # owner_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    owner_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    owner = relationship("User")
     
 class User(Base):
     __tablename__ = "users"

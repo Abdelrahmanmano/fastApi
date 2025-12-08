@@ -19,8 +19,6 @@ def login(user_credentail: OAuth2PasswordRequestForm = Depends(), db: Session = 
     # return oauth2.create_access_token(data={"user_id": user.id})
     return {"access_token": oauth2.create_access_token(data={"user_id": user.id}), "token_type": "bearer"}
 
-
-
 @router.post("/")
 def auth(user_credentail: schemas.UserLogin, db: Session = Depends(database.get_db)):
     user = db.query(models.User).filter(models.User.email == user_credentail.email).first()

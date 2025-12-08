@@ -9,13 +9,26 @@ class Post(BaseModel):
     content: Optional[str] = 'No content provided'
     published: bool = True
     rating: Optional[int] = None
-
+    
 class CreatePost(Post):
     created_at: datetime
+    
+
+class UserGet(BaseModel):
+    id: int
+    username: str
+    email: str
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+    
 
 class ResponsePost(BaseModel):
     title: str
     author: str
+    owner_id: int
+    owner: UserGet
     class Config:
         from_attributes = True
         
@@ -35,16 +48,6 @@ class User(BaseModel):
 class UserCreate(BaseModel):
     id: Optional[int] = None
     email: EmailStr
-    created_at: datetime
-
-    class Config:
-        from_attributes = True
-        
-
-class UserGet(BaseModel):
-    id: int
-    username: str
-    email: str
     created_at: datetime
 
     class Config:
