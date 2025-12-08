@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, conint
 from typing import Optional
 from datetime import datetime
 
@@ -71,3 +71,7 @@ class Token(BaseModel):
     
 class TokenData(BaseModel):
     user_id: Optional[str] = None
+    
+class Likes(BaseModel):
+    post_id: str
+    vore_dir: conint(le=1)
