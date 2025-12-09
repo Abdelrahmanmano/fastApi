@@ -2,10 +2,10 @@ from typing import List, Optional
 from fastapi import HTTPException, status, Depends, APIRouter
 from .. import models
 from ..database import  get_db
-from ..schemas import Post, ResponsePost, CreatePost, UpdatePost
+from ..schemas import Post, ResponsePost, CreatePost, UpdatePost, PostLikes
 from sqlalchemy.orm import Session
 from .. import oauth2
-
+from sqlalchemy import func
 router = APIRouter(
     prefix="/posts",
     tags=['Posts']
@@ -25,12 +25,25 @@ def del_post(id, db: Session=Depends(get_db)):
         return True
     return False
 
-@router.get("/", status_code=status.HTTP_200_OK, response_model=List[ResponsePost])
+@router.get("/", status_code=status.HTTP_200_OK, response_model=List[PostLikes])
 def get_post(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user),
              limit: int = 100, offset: int = 0, search: Optional[str]=""):
-    posts = db.query(models.Post).filter(models.Post.title.contains(search)).limit(limit).offset(offset).all()
-    return posts
-
+    new_posts = db.query(models.Post, func.count(models.Likes.post_id).label('Likes')
+                         ).join(models.Likes, models.Post.id == models.Likes.post_id, isouter=True).group_by(
+                             models.Post.id).filter(models.Post.title.contains(search)).limit(limit).offset(offset).all()
+    print('new post', list(new_posts))
+    # posts = db.query(models.Post).filter(models.Post.title.contains(search)).limit(limit).offset(offset).all()
+    result = []
+    for post, likes in new_posts:
+        post_dict = post.__dict__.copy()
+        post_dict["likes"] = likes
+        post_dict.pop("_sa_instance_state", None)
+        # Add owner as nested dict
+        owner = db.query(models.User).filter(models.User.id == post.owner_id).first()
+        post_dict["owner"] = owner
+        result.append(post_dict)
+    return result
+    
 @router.get("/user/posts", status_code=status.HTTP_200_OK, response_model=List[ResponsePost])
 def get_user_posts(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
     posts = db.query(models.Post).filter(models.Post.owner_id == current_user.id).all()

@@ -29,6 +29,7 @@ class ResponsePost(BaseModel):
     author: str
     owner_id: int
     owner: UserGet
+    # likes_count: int
     class Config:
         from_attributes = True
         
@@ -73,5 +74,20 @@ class TokenData(BaseModel):
     user_id: Optional[str] = None
     
 class Likes(BaseModel):
-    post_id: str
-    vore_dir: conint(le=1)
+    post_id: int
+    vote_dir: conint(le=1)
+
+class ReturnLikes(BaseModel):
+    post_id: int
+    user_id: int
+    
+class PostLikes(BaseModel):
+    id: int
+    title: str
+    content: str
+    owner_id: int
+    owner: UserCreate
+    likes: int
+
+    class Config:
+        from_attributes = True
